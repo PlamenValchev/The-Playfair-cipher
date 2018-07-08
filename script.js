@@ -6,7 +6,7 @@ jQuery.cipher = {
     maxRow: 5, // Rows .
     maxCol: 5, // Columns .
     nullCh: 'X', // Char used to break up duplicate letters and fill uneven pairs.
-    randomTable: false, 
+    restTable: false, 
     subCh: {
         sub: 'J', 
         rpl: 'I' 
@@ -22,7 +22,7 @@ $('#generateKeytable').click(function(){
 
     function validateForm(){
         
-        var text = /^[A-Za-z ]+$/;
+        var text = /^[A-Z a-z]+$/;
         
         var keyword = $('#keyword').val();
         
@@ -40,19 +40,11 @@ $('#generateKeytable').click(function(){
     }
 });
 
-function shuffleStr(str) {
+function splitStr(str) {
     var array = str.split("");
     var m = array.length,
         t, i;
-    
-    while (m) {
-        // Change element
-        i = Math.floor(Math.random() * m--);
-        // Replace it with the current element.
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
+
     return array.join("");
 }
 
@@ -183,7 +175,7 @@ function generateKeyTable(keystring) {
     });
 
 // Fill in the rest of the table    
-    if ($.cipher.randomTable) $.cipher.key += shuffleStr($.cipher.alpha);
+    if ($.cipher.restTable) $.cipher.key += splitStr($.cipher.alpha);
     else $.cipher.key += $.cipher.alpha;
 }
 
