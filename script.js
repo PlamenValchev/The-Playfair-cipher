@@ -12,6 +12,31 @@ jQuery.cipher = {
     }
 };
 
+$(document).ready(function(){
+
+$('#generateKeytable').click(function(){
+    validateForm();   
+    });
+
+    function validateForm(){
+        
+        var text = /^[A-Za-z]+$/;
+        
+        var keyword = $('#keyword').val();
+        
+        
+        if ((!text.test(keyword))){
+            
+            $('#keywordStat').html(' ! Въведи текст с латински букви !');
+            $('#keywordStat').css('color', '#f44256');
+        }
+        else{
+            $('#keywordStat').html(' Ключа е валиден :)');
+            $('#keywordStat').css('color', '#41f453');
+        }
+        
+    }
+});
 
 function shuffleStr(str) {
     var array = str.split("");
@@ -20,9 +45,9 @@ function shuffleStr(str) {
 
     
     while (m) {
-        // Pick a remaining element…
+        // Change element
         i = Math.floor(Math.random() * m--);
-        // And swap it with the current element.
+        // Replace it with the current element.
         t = array[m];
         array[m] = array[i];
         array[i] = t;
@@ -71,7 +96,7 @@ function encipherPair(str) {
     var pos2 = getCharPosition(str.charAt(1));
     var char1 = "";
 
-    
+    // if same colum
     if (pos1.col == pos2.col) {
         pos1.row++;
         pos2.row++;
@@ -105,45 +130,6 @@ function encipher(digraph) {
 }
 
 
-function decipherPair(str) {
-    if (str.length != 2) return false;
-    var pos1 = getCharPosition(str.charAt(0));
-    var pos2 = getCharPosition(str.charAt(1));
-    var char1 = "";
-
-   
-    if (pos1.col == pos2.col) {
-        pos1.row--;
-        pos2.row--;
-        if (pos1.row < 0) pos1.row = $.cipher.maxRow - 1;
-        if (pos2.row < 0) pos2.row = $.cipher.maxRow - 1;
-        char1 = getCharFromPosition(pos1) + getCharFromPosition(pos2);
-    } else if (pos1.row == pos2.row) { // Same row - Decrement 1 column, wrap around to right
-        pos1.col--;
-        pos2.col--;
-        if (pos1.col < 0) pos1.col = $.cipher.maxCol - 1;
-        if (pos2.col < 0) pos2.col = $.cipher.maxCol - 1;
-        char1 = getCharFromPosition(pos1) + getCharFromPosition(pos2);
-    } else { // Box rules, use opposing corners (same as forward)
-        var col1 = pos1.col;
-        var col2 = pos2.col;
-        pos1.col = col2;
-        pos2.col = col1;
-        char1 = getCharFromPosition(pos1) + getCharFromPosition(pos2);
-    }
-    return char1;
-}
-
-
-function decipher(digraph) {
-    if (!digraph) return false;
-    var plaintext = [];
-    for (var i = 0; i < digraph.length; i++) {
-        plaintext.push(decipherPair(digraph[i]));
-    }
-    return plaintext;
-}
-
 
 function makeDigraph(str) {
     if (!str) return false;
@@ -164,7 +150,7 @@ function makeDigraph(str) {
 
 
 function generateKeyTable(keystring) {
-    if (!keystring) keystring = "PLAYFAIRCIPHER";
+    if (!keystring) keystring = "playfair example";
 
     
     keystring = keystring.toUpperCase();
@@ -216,5 +202,3 @@ $("#encipher").click(function () {
     var cipher = encipher(digraph);
     $("#de").val(cipher.join(" "));
 });
-
-

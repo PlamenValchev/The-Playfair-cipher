@@ -8,21 +8,21 @@
 
 <body>
   <p>3. Шифроване чрез Плейфеър шифър - 
-Playfair_cipher 
-Метод за шифроване: думата-ключ се поставя в таблица 5х5, която се запълва с останалите букви от азбуката, така че да няма повтарящи се.</p>
-<input id="keyword" value=""></input>
+Playfair Cipher <br>
+Метод за шифроване: думата-ключ се поставя в таблица 5х5, която се запълва с останалите букви от азбуката, така че да няма повтарящи се.<br>http://en.wikipedia.org/wiki/Playfair_cipher</p>
+<input id="keyword" value="" id="keyword"><span id="keywordStat"></span>
 <br />
-<button id="generateKeytable">Думата-ключ  </button>
+<button id="generateKeytable">Въведи Думата-ключ</button>
 <button id="regenerateKeytable" style="display: none">Примерна таблица</button>
 <br />
 <span id="AfterGen" style="display: none">
     <div id="keyTable"></div>
     <p>
-        
+        Въведи текст с латински букви
     </p>
-    <textarea id="en" cols="50" rows="5"></textarea><br/><button id="encipher">Кодиране</button><br />
+    <textarea id="en" cols="55" rows="5"></textarea><br/><button id="encipher">Кодиране</button><br />
     <br />
-    <textarea id="de" cols="50" rows="5"></textarea><br/>
+    <textarea id="de" cols="55" rows="5"></textarea><br/>
 </span>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="script.js"></script>
