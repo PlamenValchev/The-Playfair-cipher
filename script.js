@@ -1,10 +1,11 @@
+// Create object where to store data
 jQuery.cipher = {
-    key: "", 
-    alpha: "", 
-    allowed: "ABCDEFGHIKLMNOPQRSTUVWXYZ", 
-    maxRow: 5, 
-    maxCol: 5, 
-    nullCh: 'X', 
+    key: "", // blank key.
+    alpha: "", // Stores our alphabet.
+    allowed: "ABCDEFGHIKLMNOPQRSTUVWXYZ ", 
+    maxRow: 5, // Rows .
+    maxCol: 5, // Columns .
+    nullCh: 'X', // Char used to break up duplicate letters and fill uneven pairs.
     randomTable: false, 
     subCh: {
         sub: 'J', 
@@ -12,6 +13,7 @@ jQuery.cipher = {
     }
 };
 
+// Validate Form
 $(document).ready(function(){
 
 $('#generateKeytable').click(function(){
@@ -20,7 +22,7 @@ $('#generateKeytable').click(function(){
 
     function validateForm(){
         
-        var text = /^[A-Za-z]+$/;
+        var text = /^[A-Za-z ]+$/;
         
         var keyword = $('#keyword').val();
         
@@ -42,7 +44,6 @@ function shuffleStr(str) {
     var array = str.split("");
     var m = array.length,
         t, i;
-
     
     while (m) {
         // Change element
@@ -55,7 +56,8 @@ function shuffleStr(str) {
     return array.join("");
 }
 
-
+// Print matrix 5x5 
+// HTML Table for our key table.
 function printKey() {
     var tableHtml = "<table>";
     for (var i = 0; i < 25; i = i + 5) {
@@ -71,7 +73,7 @@ function printKey() {
     $("#keyTable").html(tableHtml);
 }
 
-
+// Position of letters in the table
 function getCharPosition(c) {
     var index = $.cipher.key.indexOf(c);
     var row = Math.floor(index / 5);
@@ -82,34 +84,41 @@ function getCharPosition(c) {
     };
 }
 
-
+// Take a character based on the given position
+// Position must be an object with both row and col attributes.
 function getCharFromPosition(pos) {
     var index = pos.row * 5;
     index = index + pos.col;
     return $.cipher.key.charAt(index);
 }
 
-
+// Applies the Playfair rules to a given set of letters.
 function encipherPair(str) {
     if (str.length != 2) return false;
     var pos1 = getCharPosition(str.charAt(0));
     var pos2 = getCharPosition(str.charAt(1));
     var char1 = "";
 
-    // if same colum
+// Same Column - Increment 1 row, wrap around to top
     if (pos1.col == pos2.col) {
         pos1.row++;
         pos2.row++;
         if (pos1.row > $.cipher.maxRow - 1) pos1.row = 0;
         if (pos2.row > $.cipher.maxRow - 1) pos2.row = 0;
         char1 = getCharFromPosition(pos1) + getCharFromPosition(pos2);
-    } else if (pos1.row == pos2.row) { 
+    } 
+
+// Same Row - Increment 1 column, wrap around to left
+    else if (pos1.row == pos2.row) { 
         pos1.col++;
         pos2.col++;
         if (pos1.col > $.cipher.maxCol - 1) pos1.col = 0;
         if (pos2.col > $.cipher.maxCol - 1) pos2.col = 0;
         char1 = getCharFromPosition(pos1) + getCharFromPosition(pos2);
-    } else { 
+    } 
+    
+// Use the opposing corners
+    else { 
         var col1 = pos1.col;
         var col2 = pos2.col;
         pos1.col = col2;
@@ -119,7 +128,8 @@ function encipherPair(str) {
     return char1;
 }
 
-
+// Loops a digraph and passes each letter pair to encipherPair
+// Returns the cipher in an array
 function encipher(digraph) {
     if (!digraph) return false;
     var cipher = [];
@@ -130,7 +140,8 @@ function encipher(digraph) {
 }
 
 
-
+// Turns a string into a digraph
+// Sanitizes the string, returns the digraph in an array
 function makeDigraph(str) {
     if (!str) return false;
     var digraph = [];
@@ -148,7 +159,8 @@ function makeDigraph(str) {
     return digraph;
 }
 
-
+// Creates our key table based upon a given key string
+// Clean the key string, using a default key if one is not provided.
 function generateKeyTable(keystring) {
     if (!keystring) keystring = "playfair example";
 
@@ -161,7 +173,7 @@ function generateKeyTable(keystring) {
     $.cipher.key = "";
     $.cipher.alpha = $.cipher.allowed;
 
-    
+// Create the start of the table with our key string   
     var keyArr = keystring.split("");
     $.each(keyArr, function (x, c) {
         if ($.cipher.alpha.indexOf(c) > -1 && $.cipher.key.indexOf(c) == -1) {
@@ -170,12 +182,12 @@ function generateKeyTable(keystring) {
         }
     });
 
-    
+// Fill in the rest of the table    
     if ($.cipher.randomTable) $.cipher.key += shuffleStr($.cipher.alpha);
     else $.cipher.key += $.cipher.alpha;
 }
 
-
+// Generates the table
 $("#generateKeytable").click(function () {
     $(this).hide();
     $("#regenerateKeytable").show();
@@ -185,7 +197,7 @@ $("#generateKeytable").click(function () {
     $("#AfterGen").slideDown();
 });
 
-
+// Regenerates the table
 $("#regenerateKeytable").click(function () {
     $("#AfterGen").hide();
     generateKeyTable($("#keyword").val());
@@ -194,7 +206,7 @@ $("#regenerateKeytable").click(function () {
     $("#AfterGen").slideDown();
 });
 
-
+// Encipher the contents of the textarea
 $("#encipher").click(function () {
     var digraph = makeDigraph($("#en").val());
     if (!digraph) alert("Bad entry");
